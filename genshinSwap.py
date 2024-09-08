@@ -41,32 +41,39 @@ def on_click(x, y, button, pressed):
             if len(click_positions) < 4:
                 click_positions.append((x, y))
                 print(f"Recorded click {len(click_positions)}: ({x}, {y})")
+                print(get_pixel_color(x, y))
                 if len(click_positions) == 4:
                     # Stop the listener after four clicks
                     return False
 
 def get_situation(positions):
+    global SITUATION
     for idx, (x, y) in enumerate(positions, start=1):
         color = get_pixel_color(x, y)
         avg = sum(color)/3
-        if avg < 240: return idx
+        if avg < 235: return idx
+    print("def:", SITUATION)
+    return SITUATION
 
 def monitor_colors(a, b, button, pressed):
-    if pressed:
-        with click_lock:
-            # Make a copy to prevent race conditions
-            positions = click_positions.copy()
-        if not positions:
-            print("No positions to monitor.")
-        elif button == Button.x1 or button == Button.x2:
-            SITUATION = get_situation(positions)
-            if button == Button.x2: SITUATION -= 1
-            if button == Button.x1: SITUATION += 1
-            if SITUATION == 0: SITUATION = 4
-            if SITUATION == 5: SITUATION = 1
-            press = str(SITUATION)
-            k.press_and_release(str(press))
-
+    global SITUATION
+    try:
+        if pressed:
+            with click_lock:
+                # Make a copy to prevent race conditions
+                positions = click_positions.copy()
+            if not positions:
+                print("No positions to monitor.")
+            elif button == Button.x1 or button == Button.x2:
+                SITUATION = get_situation(positions)
+                if button == Button.x2: SITUATION -= 1
+                if button == Button.x1: SITUATION += 1
+                if SITUATION == 0: SITUATION = 4
+                if SITUATION == 5: SITUATION = 1
+                press = str(SITUATION)
+                k.press_and_release(str(press))
+    except Exception as e:
+        print(e)
 def main():
     """
     Main function to start the mouse listener and the color monitoring thread.
