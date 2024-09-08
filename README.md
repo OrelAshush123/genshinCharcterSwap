@@ -53,5 +53,6 @@ pip install keyboard pynput pyautogui
 
 To stop the program, press `Ctrl+C` in the terminal or close the script window.
 
+## here a quick guide how to use the exe:
 [![Watch the video](https://img.youtube.com/vi/eAGYL5vfUgo/maxresdefault.jpg)](https://www.youtube.com/watch?v=eAGYL5vfUgo)
 
